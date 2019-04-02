@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall.pms.mapper.ProductMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommand_status, verify_status, sort, sale, price, promotion_price, gift_growth, gift_point, use_point_limit, sub_title, description, original_price, stock, low_stock, unit, weight, preview_status, service_ids, keywords, note, album_pics, detail_title, detail_desc, detail_html, detail_mobile_html, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name
+    </sql>
+    <!--批量删除-->
+    <update id="deleteProductBatch" >
+        UPDATE pms_product SET `delete_status`=1 WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+    <!--批量设置是否审核-->
+    <update id="updateVerifyStatusBatch" >
+        UPDATE pms_product SET `verify_status`=#{verifyStatus} WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+<!--批量设置上下架-->
+    <update id="updatePublishStatusBatch" >
+        UPDATE pms_product SET `publish_status`=#{publishStatus} WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+<!--批量设为推荐-->
+    <update id="updateRecommendStatusBatch" >
+        UPDATE pms_product SET `recommand_status`=#{recommendStatus} WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--批量设为新品-->
+    <update id="updateNewStatusBatch" >
+        UPDATE pms_product SET `new_status`=#{newStatus} WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+    <!--List<EsProductAttributeValue> getProductSaleAttr(Long productId);筛选销售属性-->
+    <select id="getProductSaleAttr" resultType="com.atguigu.gmall.to.es.EsProductAttributeValue">
+        SELECT av.*,a.* FROM pms_product_attribute_value av
+            LEFT JOIN pms_product_attribute a
+            ON av.product_attribute_id = a.id
+            WHERE av.`product_id` = #{id} AND a.`type`=0
+    </select>
+    <!--  List<EsProductAttributeValue> getProductBaseAttr(Long productId);筛选基本属性-->
+    <select id="getProductBaseAttr" resultType="com.atguigu.gmall.to.es.EsProductAttributeValue">
+        SELECT av.*,a.* FROM pms_product_attribute_value av
+        LEFT JOIN pms_product_attribute a
+        ON av.product_attribute_id = a.id
+        WHERE av.`product_id` = #{id} AND a.`type`=1
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall.pms.mapper.BrandMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story
+    </sql>
+<!--批量更新商标是否显示以及商家是否显示-->
+    <!--商标不显示-->
+    <update id="updateBrandShowStatusToHidden" >
+        UPDATE pms_brand SET `show_status`=0 WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close= ")">
+            #{id}
+        </foreach>
+    </update>
+    <!--显示商标-->
+    <update id="updateBrandShowStatusToShow" >
+        UPDATE pms_brand SET `show_status`=1 WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+    <!--显示生产商-->
+    <update id="updateBrandFactoryStatusToShow" >
+        UPDATE pms_brand SET `factory_status`=1 WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+    <!--不显示生产商-->
+    <update id="updateBrandFactoryStatusToHidden" >
+        UPDATE pms_brand SET `factory_status`=0 WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+</mapper>
